@@ -8,9 +8,9 @@ CreateThread(function ()
     local function AddApp()
         local added, errorMessage = exports["lb-phone"]:AddCustomApp({
             identifier = identifier,
-            name = "React JS",
-            description = "Template app using react",
-            developer = "Breze",
+            name = "KushMaps",
+            description = "KushMaps v0.1",
+            developer = "RilexBTw",
             defaultApp = true, -- OPTIONAL if set to true, app should be added without having to download it,
             size = 59812, -- OPTIONAL in kb
             -- price = 0, -- OPTIONAL, Make players pay with in-game money to download the app
