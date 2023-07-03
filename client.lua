@@ -11,7 +11,7 @@ CreateThread(function ()
             name = "KushMaps",
             description = "KushMaps v0.1",
             developer = "RilexBTw",
-            defaultApp = true, -- OPTIONAL if set to true, app should be added without having to download it,
+            defaultApp = false, -- OPTIONAL if set to true, app should be added without having to download it,
             size = 59812, -- OPTIONAL in kb
             -- price = 0, -- OPTIONAL, Make players pay with in-game money to download the app
             images = {"https://example.com/photo.jpg"}, -- OPTIONAL array of images for the app on the app store
