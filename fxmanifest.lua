@@ -1,7 +1,7 @@
 fx_version "cerulean"
 game "gta5"
 
-title "LB Phone - App Template | React TS"
+title "LB Phone - App Template | React JS"
 description "A template for creating apps for the LB Phone."
 author "Breze & Loaf"
 

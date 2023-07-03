@@ -1,3 +1,7 @@
+# LB Phone - React JS Template
+
+If you don't know how react.js works, you should use the [vanilla js](https://github.com/lbphone/lb-phone-app-template/tree/main/vanilla-js) template instead.
+
 ## Installing modules
 
 1. Install [node.js](https://nodejs.org/en/download)

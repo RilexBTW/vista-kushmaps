@@ -1,4 +1,4 @@
-local identifier = "react-ts-template"
+local identifier = "react-js-template"
 
 CreateThread(function ()
     while GetResourceState("lb-phone") ~= "started" do
@@ -8,7 +8,7 @@ CreateThread(function ()
     local function AddApp()
         local added, errorMessage = exports["lb-phone"]:AddCustomApp({
             identifier = identifier,
-            name = "React TS",
+            name = "React JS",
             description = "Template app using react",
             developer = "Breze",
             defaultApp = true, -- OPTIONAL if set to true, app should be added without having to download it,

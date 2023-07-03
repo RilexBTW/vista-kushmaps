@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './App.css';
 
-const devMode = !window?.['invokeNative'];
+const devMode = !window.invokeNative;
 
 const App = () => {
     const [theme, setTheme] = useState('light');
@@ -9,7 +9,7 @@ const App = () => {
     const [notificationText, setNotificationText] = useState('Notification text');
     const appDiv = useRef(null);
 
-    const { setPopUp, setContextMenu, selectGIF, selectGallery, selectEmoji, fetchNui, sendNotification, getSettings, onSettingsChange, colorPicker, useCamera } = window as any;
+    const { setPopUp, setContextMenu, selectGIF, selectGallery, selectEmoji, fetchNui, sendNotification, getSettings, onSettingsChange, colorPicker, useCamera } = window;
 
     useEffect(() => {
         if (devMode) {
@@ -17,11 +17,11 @@ const App = () => {
             document.getElementsByTagName('body')[0].style.visibility = 'visible';
             return;
         } else {
-            getSettings().then((settings: any) => setTheme(settings.display.theme));
-            onSettingsChange((settings: any) => setTheme(settings.display.theme));
+            getSettings().then((settings) => setTheme(settings.display.theme));
+            onSettingsChange((settings) => setTheme(settings.display.theme));
         }
 
-        fetchNui('getDirection').then((direction: string) => setDirection(direction));
+        fetchNui('getDirection').then((direction) => setDirection(direction));
 
         window.addEventListener('message', (e) => {
             if (e.data?.type === 'updateDirection') setDirection(e.data.direction);
@@ -38,7 +38,7 @@ const App = () => {
                 <div className='app-wrapper'>
                     <div className='header'>
                         <div className='title'>Custom App Template</div>
-                        <div className='subtitle'>React TS</div>
+                        <div className='subtitle'>React JS</div>
                         <a className='subtitle'>{direction}</a>
                     </div>
                     <div className='button-wrapper'>
@@ -98,7 +98,7 @@ const App = () => {
                         <button
                             id='gif'
                             onClick={() => {
-                                selectGIF((gif: string) => {
+                                selectGIF((gif) => {
                                     setPopUp({
                                         title: 'Selected GIF',
                                         attachment: { src: gif },
@@ -119,7 +119,7 @@ const App = () => {
                                 selectGallery({
                                     includeVideos: true,
                                     includeImages: true,
-                                    cb: (data: { src: string; isVideo: boolean; timestamp: number }) => {
+                                    cb: (data) => {
                                         setPopUp({
                                             title: 'Selected media',
                                             attachment: data,
@@ -138,7 +138,7 @@ const App = () => {
                         <button
                             id='emoji'
                             onClick={() => {
-                                selectEmoji((emoji: string) => {
+                                selectEmoji((emoji) => {
                                     setPopUp({
                                         title: 'Selected emoji',
                                         description: emoji,
@@ -156,7 +156,7 @@ const App = () => {
                         <button
                             id='colorpicker'
                             onClick={() => {
-                                colorPicker((color: string) => {
+                                colorPicker((color) => {
                                     setPopUp({
                                         title: 'Selected color',
                                         description: color,
@@ -205,7 +205,7 @@ const App = () => {
                         >
                             Camera Component
                         </button>
-                        <input placeholder='Notification text' onChange={(e: any) => setNotificationText(e.target.value)}></input>
+                        <input placeholder='Notification text' onChange={(e) => setNotificationText(e.target.value)}></input>
                     </div>
                 </div>
             </div>
@@ -213,10 +213,29 @@ const App = () => {
     );
 };
 
-const AppProvider: React.FC = ({ children }) => {
+const AppProvider = ({ children }) => {
     if (devMode) {
         return <div className='dev-wrapper'>{children}</div>;
     } else return children;
+};
+
+const fetchData = (action, data) => {
+    if (!action || !data) return;
+
+    const options = {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8'
+        },
+        body: JSON.stringify(data)
+    };
+
+    return new Promise((resolve, reject) => {
+        fetch(`https://${window.resourceName}/${action}`, options)
+            .then((response) => response.json())
+            .then(resolve)
+            .catch(reject);
+    });
 };
 
 export default App;
