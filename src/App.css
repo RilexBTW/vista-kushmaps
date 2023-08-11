@@ -99,6 +99,33 @@ input {
     outline: none;
 }
 
+.store-card {
+  position: relative;
+  margin: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: width 0.2s ease-in-out;
+}
+
+.resize-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 10px;
+  height: 100%;
+  cursor: col-resize;
+  background-color: #ccc;
+}
+
+.resizing {
+  user-select: none;
+  pointer-events: none;
+}
+
+
+
+
 /* BottomNavigation.css */
 .bottom-navigation {
     position: fixed;

@@ -7,7 +7,7 @@
 }
 
 [data-theme='dark'] {
-    --background-primary: #000000;
+    --background-primary: #1b1b1b;
     --background-highlight: rgb(20, 20, 20);
 
     --text-primary: #f2f2f7;
