@@ -1,31 +1,25 @@
-import { useEffect, useRef, useState } from 'react';
-import { BottomNavigation, BottomNavigationAction } from '@mui/material';
-import RestoreIcon from '@mui/icons-material/Restore';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import ButtonAppBar from './ButtonAppBar';
-import SimpleBottomNavigation from './SimpleBottomNavigation';
-
-
+import React, { useEffect, useRef, useState } from 'react';
+import { CssBaseline, AppBar, BottomNavigation, BottomNavigationAction, Toolbar, Typography, Container, Grid } from '@mui/material';
+import { Home, Explore, Favorite } from '@mui/icons-material';
 import './App.css';
+import './colors.css';
+import ButtonAppBar from './ButtonAppBar';
 
 const devMode = !window.invokeNative;
-
-
-
 
 const App = () => {
     const [theme, setTheme] = useState('dark');
     const [direction, setDirection] = useState('N');
     const [notificationText, setNotificationText] = useState('Notification text');
     const appDiv = useRef(null);
-    
-    const [value, setValue] = useState(0);
-  
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-      };
-      
+
+    const products = [
+        { id: 1, name: 'Product 1', price: 19.99 },
+        { id: 2, name: 'Product 2', price: 29.99 },
+        { id: 3, name: 'Product 3', price: 39.99 },
+        { id: 4, name: 'Product 4', price: 49.99 },
+        // Add more products as needed
+    ];
 
     const { setPopUp, setContextMenu, selectGIF, selectGallery, selectEmoji, fetchNui, sendNotification, getSettings, onSettingsChange, colorPicker, useCamera } = window;
 
@@ -50,27 +44,37 @@ const App = () => {
         if (notificationText === '') setNotificationText('Notification text');
     }, [notificationText]);
 
-// ...
-// <ButtonAppBar />
-return (
-    <AppProvider>
-      <div className='app' ref={appDiv} data-theme={theme}>
-        <div className='app-wrapper'>
-          <div className='header'>
-            <ButtonAppBar />
-            <div className='title'>KushMaps</div>
-            <div className='subtitle'>v0.1</div>
-          </div>
-          <div className='bottomnav-wrapper'>
-            <SimpleBottomNavigation />
-          </div>
+    return (
+        <AppProvider>
+        <ButtonAppBar className="bottom-navigation" />
+        <div className="app" ref={appDiv} data-theme={theme}>
+            <CssBaseline />
+            <Container>
+                <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                        <Typography variant="h4">Products</Typography>
+                    </Grid>
+                    {products.map(product => (
+                        <Grid item key={product.id} xs={6}>
+                            {/* Product item */}
+                            <Typography variant="h6" style={{ color: 'var(--text-primary)' }}>
+                                {product.name}
+                            </Typography>
+                            <p style={{ color: 'var(--text-primary)' }}>
+                                Price: ${product.price}
+                            </p>
+                        </Grid>
+                    ))}
+                </Grid>
+            </Container>
+            <BottomNavigation className="bottom-navigation">
+                <BottomNavigationAction label="Home" icon={<Home />} />
+                <BottomNavigationAction label="Explore" icon={<Explore />} />
+                <BottomNavigationAction label="Favorite" icon={<Favorite />} />
+            </BottomNavigation>
         </div>
-      </div>
     </AppProvider>
-  );
-  
-  // ...
-  
+    );
 };
 
 const AppProvider = ({ children }) => {
