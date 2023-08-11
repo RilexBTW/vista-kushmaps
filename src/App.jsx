@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { CssBaseline, AppBar, BottomNavigation, BottomNavigationAction, Toolbar, Typography, Container } from '@mui/material';
+import { CssBaseline, BottomNavigation, BottomNavigationAction, Container, Typography, Backdrop } from '@mui/material';
 import { Home, Explore, ShoppingCart } from '@mui/icons-material';
 import StoreLocations from './StoreLocations';
 import Cart from './Cart';
@@ -21,7 +21,6 @@ const App = () => {
     const [cartItems, setCartItems] = useState([]);
     const appDiv = useRef(null);
     const [isCartEmptyPopupOpen, setIsCartEmptyPopupOpen] = useState(false);
-    const [addedToCartProduct, setAddedToCartProduct] = useState(null);
     const [isCartPopupOpen, setIsCartPopupOpen] = useState(false);
 
     const products = [
@@ -39,10 +38,28 @@ const App = () => {
         // Add more store locations as needed <ButtonAppBar className="bottom-navigation" />
     ];
 
+    const handleHomeClick = () => {
+        setSelectedStore(null);
+        setShowLocations(false);
+    };
 
-    const { /* ... window functions ... */ } = window;
+    const handleCartButtonClick = () => {
+        if (cartItems.length === 0) {
+            setIsCartEmptyPopupOpen(true);
+        } else {
+            setShowLocations(false);
+        }
+        setIsCartPopupOpen(!isCartPopupOpen); // Toggle the cart popup
+    };
 
-    const { setPopUp, setContextMenu, selectGIF, selectGallery, selectEmoji, fetchNui, sendNotification, getSettings, onSettingsChange, colorPicker, useCamera } = window;
+    const handleAddToCart = (product) => {
+        setCartItems([...cartItems, product]);
+    };
+
+    const handleRemoveFromCart = (productId) => {
+        const updatedCart = cartItems.filter(item => item.id !== productId);
+        setCartItems(updatedCart);
+    };
 
     useEffect(() => {
         if (devMode) {
@@ -65,52 +82,44 @@ const App = () => {
         if (notificationText === '') setNotificationText('Notification text');
     }, [notificationText]);
 
-    const handleHomeClick = () => {
-        setSelectedStore(null);
-        setShowLocations(false);
-    };
-
-    
-    const handleCartButtonClick = () => {
-        if (cartItems.length === 0) {
-            setIsCartEmptyPopupOpen(true);
-        } else {
-            setShowLocations(false);
-        }
-    };
-
-    
-
     return (
-        <AppProvider>
-            <div className="app" ref={appDiv} data-theme={theme}>
-                <CssBaseline />
-                <Container>
-                    <Typography variant="h4" style={{ color: 'var(--text-primary)', display: 'flex', justifyContent: 'center' }} >KushMaps </Typography>
-                    {showLocations && !selectedStore ? (
-                        <StoreLocations storeLocations={storeLocations} onClickStore={setSelectedStore} />
+<AppProvider>
+    <div className="app" ref={appDiv} data-theme={theme}>
+        <CssBaseline />
+        <Container>
+            <Typography variant="h4" style={{ color: 'var(--text-primary)', display: 'flex', justifyContent: 'center' }}>
+                KushMaps
+            </Typography>
+            {showLocations && !selectedStore ? (
+                <StoreLocations
+                    storeLocations={storeLocations}
+                    onClickStore={setSelectedStore}
+                    onClickProduct={handleAddToCart}
+                />
+            ) : (
+                selectedStore ? (
+                    <StorePage store={selectedStore} products={products} onAddToCart={handleAddToCart} />
+                ) : (
+                    cartItems.length > 0 && !showLocations ? (
+                        <Cart cartItems={cartItems} onRemoveFromCart={handleRemoveFromCart} />
                     ) : (
-                        selectedStore ? (
-                            <StorePage store={selectedStore} products={products} onAddToCart={(product) => setCartItems([...cartItems, product])} />
-                        ) : (
-                            cartItems.length > 0 && !showLocations ? (
-                                <Cart cartItems={cartItems} />
-                            ) : (
-                                showLocations && cartItems.length === 0 && (
-                                    <EmptyCart /> // Display the EmptyCart component when cart is empty and viewing the cart
-                                )
-                            )
+                        showLocations && cartItems.length === 0 && (
+                            <EmptyCart /> // Display the EmptyCart component when cart is empty and viewing the cart
                         )
-                    )}
-                </Container>
-                <BottomNavigation className="bottom-navigation">
-                    <BottomNavigationAction label="Home" icon={<Home />} onClick={handleHomeClick} />
-                    <BottomNavigationAction label="Locations" icon={<Explore />} onClick={() => setShowLocations(true)} />
-                    <BottomNavigationAction label="Cart" icon={<ShoppingCart />} onClick={handleCartButtonClick} />
-                </BottomNavigation>
-                <CartEmptyMessagePopup open={isCartEmptyPopupOpen} onClose={() => setIsCartEmptyPopupOpen(false)} />
-            </div>
-        </AppProvider>
+                    )
+                )
+            )}
+            <Backdrop open={isCartPopupOpen} onClick={handleCartButtonClick} style={{ zIndex: 1100, position: 'absolute', top: 0, left: 0, width: '100%', height: '100vh' }} />
+        </Container>
+        <BottomNavigation className="bottom-navigation">
+            <BottomNavigationAction label="Home" icon={<Home />} onClick={handleHomeClick} />
+            <BottomNavigationAction label="Locations" icon={<Explore />} onClick={() => setShowLocations(true)} />
+            <BottomNavigationAction label="Cart" icon={<ShoppingCart />} onClick={handleCartButtonClick} />
+        </BottomNavigation>
+        <CartEmptyMessagePopup open={isCartEmptyPopupOpen} onClose={() => setIsCartEmptyPopupOpen(false)} />
+    </div>
+</AppProvider>
+
     );
 };
 
@@ -120,23 +129,6 @@ const AppProvider = ({ children }) => {
     } else return children;
 };
 
-const fetchData = (action, data) => {
-    if (!action || !data) return;
-
-    const options = {
-        method: 'post',
-        headers: {
-            'Content-Type': 'application/json; charset=UTF-8'
-        },
-        body: JSON.stringify(data)
-    };
-
-    return new Promise((resolve, reject) => {
-        fetch(`https://${window.resourceName}/${action}`, options)
-            .then((response) => response.json())
-            .then(resolve)
-            .catch(reject);
-    });
-};
+// ... (fetchData and other functions)
 
 export default App;
